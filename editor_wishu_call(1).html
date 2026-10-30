@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDITOR WISHU CALL</title>
+<style>
+:root{--blue:#1479ff;--dark:#07152e;--panel:#10264a}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;color:#eef5ff;background:radial-gradient(circle at top,#153e79,#061126 65%);display:grid;place-items:center;padding:18px}
+main{width:min(920px,100%);background:#0a1b37eF;border:1px solid #2c5b9b;border-radius:24px;padding:24px;box-shadow:0 20px 70px #0008}
+header{display:flex;align-items:center;gap:14px;margin-bottom:22px}.logo{width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#58c6ff,#1260ed);display:grid;place-items:center;font-size:28px;box-shadow:0 0 28px #167aff66}h1{font-size:clamp(20px,4vw,30px);margin:0}header p{margin:5px 0 0;color:#9bbce9;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:#10264a;border:1px solid #244776;border-radius:18px;padding:18px}h2{font-size:18px;margin:0 0 14px}label{display:block;font-size:13px;color:#b9cdef;margin:12px 0 6px}input{width:100%;padding:12px;border-radius:10px;border:1px solid #345984;background:#081831;color:white;font-size:15px}button{border:0;border-radius:10px;background:linear-gradient(90deg,#168cff,#365cff);color:white;font-weight:700;padding:12px 15px;cursor:pointer;margin-top:12px}button.secondary{background:#203e69}button:disabled{opacity:.5;cursor:not-allowed}.row{display:flex;gap:8px;flex-wrap:wrap}.row button{flex:1}.notice{font-size:12px;line-height:1.5;color:#a8c4e9}.videos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}video{width:100%;background:#030914;aspect-ratio:4/3;border-radius:12px;object-fit:cover}.status{font-size:13px;color:#8fe6c0;min-height:18px;margin-top:10px}.rules{margin-top:16px;border-radius:12px;background:#281d3b;border:1px solid #64416c;padding:12px;color:#f5dfff;font-size:12px;line-height:1.5}
+@media(max-width:700px){.grid{grid-template-columns:1fr}main{padding:16px}.videos{grid-template-columns:1fr 1fr}}
+</style></head>
+<body><main>
+<header><div class="logo">☎</div><div><h1>EDITOR WISHU CALL</h1><p>Connect with people. Stay respectful. Stay safe.</p></div></header>
+<div class="grid">
+<section class="card"><h2>🔐 Sign in / Register</h2>
+<p class="notice">Demo page only. This sample does not collect or save passwords and is not connected to Google authentication.</p>
+<label for="email">Email address</label><input id="email" type="email" placeholder="you@example.com" autocomplete="email">
+<label for="password">Password (demo only — do not enter your real password)</label><input id="password" type="password" placeholder="Demo password" autocomplete="off">
+<div class="row"><button id="register">Register (demo)</button><button class="secondary" id="login">Login (demo)</button></div>
+<p class="notice">For a real site, use Google Sign-In (OAuth) or Firebase Authentication. Never ask users to give your site their Gmail password.</p>
+</section>
+<section class="card"><h2>📹 Video call preview</h2>
+<label for="room">Room code (share only with the person you want to call)</label><input id="room" placeholder="e.g. wishu-room-123">
+<div class="row"><button id="camera">Turn camera on</button><button id="stop" class="secondary">Turn off</button></div>
+<div class="videos"><div><video id="local" autoplay playsinline muted></video><p class="notice">Your camera</p></div><div><video id="remote" autoplay playsinline></video><p class="notice">Other person (requires a real signaling server)</p></div></div>
+<div class="row"><button id="copy" class="secondary">Copy room code</button><button id="clear" class="secondary">Clear room</button></div>
+<div id="status" class="status" role="status">Camera is off.</div>
+</section></div>
+<div class="rules"><strong>🔞 Safety rules</strong><br>Adults only (18+). Nudity and sexual content are prohibited. Do not share personal information. Block/report anyone who behaves inappropriately. This demo does not verify age, moderate content, or connect calls between users.</div>
+<p class="notice">This is a front-end prototype, not a published or production-ready video-call service. Real multi-user calls need secure authentication, WebRTC signaling, HTTPS, moderation/reporting, and server-side safety controls.</p>
+</main>
+<script>
+const status=document.getElementById('status');let stream=null;
+document.getElementById('register').onclick=()=>{status.textContent='Demo only: registration is not saved. Connect a secure authentication provider for real accounts.';};
+document.getElementById('login').onclick=()=>{status.textContent='Demo only: login is not connected to an account system.';};
+document.getElementById('camera').onclick=async()=>{try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});document.getElementById('local').srcObject=stream;status.textContent='Camera and microphone are on for local preview only.';}catch(e){status.textContent='Camera/microphone unavailable or permission denied. Use HTTPS or localhost and allow permissions.';}};
+function stop(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}document.getElementById('local').srcObject=null;status.textContent='Camera and microphone are off.';}
+document.getElementById('stop').onclick=stop;
+document.getElementById('copy').onclick=async()=>{const v=document.getElementById('room').value.trim();if(!v){status.textContent='Enter a room code first.';return;}try{await navigator.clipboard.writeText(v);status.textContent='Room code copied. This demo still does not connect another caller.';}catch(e){status.textContent='Room code: '+v;}};
+document.getElementById('clear').onclick=()=>{document.getElementById('room').value='';status.textContent='Room code cleared.';};
+window.addEventListener('beforeunload',stop);
+</script></body></html>
